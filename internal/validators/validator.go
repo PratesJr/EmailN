@@ -18,9 +18,9 @@ func Validate(object interface{}) error {
 	case "required":
 		return errors.New(validationErr.StructField() + " is required")
 	case "min":
-		return errors.New(validationErr.StructField() + " is required with min" + validationErr.Param())
+		return errors.New(validationErr.StructField() + " is required with min " + validationErr.Param())
 	case "max":
-		return errors.New(validationErr.StructField() + " is required with max" + validationErr.Param())
+		return errors.New(validationErr.StructField() + " is required with max " + validationErr.Param())
 	case "email":
 		return errors.New(validationErr.StructField() + " is not valid")
 	}

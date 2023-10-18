@@ -21,62 +21,60 @@ var (
 	service = campaign.Service{}
 )
 
-func TestCreateCampaign(t *testing.T) {
-	assertions := assert.New(t)
-	repoMock := new(mocks.RepositoryMock)
+func TestService(t *testing.T) {
+	t.Run("should create a campaign swith no errors", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
 
-	repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
-		return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
-	})).Return(nil)
+		repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
+			return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
+		})).Return(nil)
 
-	service.Repository = repoMock
-	id, err := service.Create(newCampaign)
+		service.Repository = repoMock
+		id, err := service.Create(newCampaign)
 
-	assertions.NotNil(id)
-	assertions.Nil(err)
-}
+		assertions.NotNil(id)
+		assertions.Nil(err)
+	})
 
-func TestSaveCampaign(t *testing.T) {
+	t.Run("should save campaign", func(t *testing.T) {
+		repoMock := new(mocks.RepositoryMock)
 
-	repoMock := new(mocks.RepositoryMock)
+		repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
+			return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
+		})).Return(nil)
 
-	repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
-		return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
-	})).Return(nil)
+		service.Repository = repoMock
 
-	service.Repository = repoMock
+		service.Create(newCampaign)
 
-	service.Create(newCampaign)
+		repoMock.AssertExpectations(t)
+	})
+	t.Run("should return the 'min' exception", func(t *testing.T) {
+		newCampaign.Name = ""
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
 
-	repoMock.AssertExpectations(t)
-}
-func TestDomainError(t *testing.T) {
-	newCampaign.Name = ""
-	assertions := assert.New(t)
-	repoMock := new(mocks.RepositoryMock)
+		repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
+			return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
+		})).Return(nil)
 
-	repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
-		return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
-	})).Return(nil)
+		service.Repository = repoMock
+		_, err := service.Create(newCampaign)
 
-	service.Repository = repoMock
-	_, err := service.Create(newCampaign)
+		assertions.NotNil(err)
+		assertions.Equal("Name is required with min 5", err.Error())
+	})
+	t.Run("should return the correct db exception", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
 
-	assertions.NotNil(err)
-	assertions.Equal("name can not be empty", err.Error())
+		repoMock.On("Save", mock.Anything).Return(exceptins.DbError)
 
-}
+		service.Repository = repoMock
+		_, err := service.Create(newCampaign)
 
-func TestDBError(t *testing.T) {
-	assertions := assert.New(t)
-	repoMock := new(mocks.RepositoryMock)
-
-	repoMock.On("Save", mock.Anything).Return(exceptins.DbError)
-
-	service.Repository = repoMock
-	_, err := service.Create(newCampaign)
-
-	assertions.NotNil(err)
-	assertions.True(errors.Is(exceptins.DbError, err))
-
+		assertions.NotNil(err)
+		assertions.True(errors.Is(exceptins.DbError, err))
+	})
 }
