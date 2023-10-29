@@ -3,7 +3,7 @@ package tests
 import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
-	"emailn/internal/exceptins"
+	"emailn/internal/domain/exceptions"
 	"emailn/internal/mocks"
 	"github.com/jaswdr/faker"
 	"testing"
@@ -73,13 +73,13 @@ func TestService(t *testing.T) {
 			Content: "content",
 			Email:   []string{"teste@mail.com", "testeee@mail.com"},
 		}
-		repoMock.On("Save", mock.Anything).Return(exceptins.DbError)
+		repoMock.On("Save", mock.Anything).Return(exceptions.DbError)
 
 		service.Repository = repoMock
 		_, err := service.Create(nCampaign)
 
 		assertions.NotNil(err)
-		assertions.Equal(exceptins.DbError.Error(), err.Error())
+		assertions.Equal(exceptions.DbError.Error(), err.Error())
 	})
 	t.Run("should return the 'max' exception", func(t *testing.T) {
 		newCampaign.Name = fake.Lorem().Text(25)

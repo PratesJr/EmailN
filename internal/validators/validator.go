@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"emailn/internal/exceptins"
+	"emailn/internal/domain/exceptions"
 	"errors"
 	"github.com/go-playground/validator/v10"
 )
@@ -25,5 +25,5 @@ func Validate(object interface{}) error {
 		return errors.New(validationErr.StructField() + " is not valid")
 	}
 
-	return exceptins.UnkownErrror
+	return exceptions.UnkownErrror
 }
