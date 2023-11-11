@@ -1,62 +1,78 @@
 package tests
 
 import (
-	campaign2 "emailn/internal/domain/campaign"
+	"emailn/internal/domain/campaign"
+	"github.com/jaswdr/faker"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
 
-var (
-	name     = "Campaign X"
-	content  = "body"
-	contacts = []string{"mail@email.com", "email2@mail.com"}
-)
+func TestCampaign(t *testing.T) {
+	var (
+		name     = "Campaign X"
+		content  = "Body Hi!"
+		contacts = []string{"email1@e.com", "email2@e.com"}
+		fake     = faker.New()
+	)
 
-func TestNewCampaign(t *testing.T) {
-	assertions := assert.New(t)
+	t.Run("should create a new campaign", func(t *testing.T) {
+		assertions := assert.New(t)
+		data, _ := campaign.NewCampaign(name, content, contacts)
 
-	campaign, _ := campaign2.NewCampaign(name, content, contacts)
+		assertions.Equal(data.Name, name)
+		assertions.Equal(data.Content, content)
+		assertions.Equal(len(data.Contacts), len(contacts))
 
-	assertions.Equal(campaign.Name, name)
-	assertions.Equal(campaign.Content, content)
-	assertions.Equal(len(campaign.Contacts), len(contacts))
-}
-func TestIDIsNotNull(t *testing.T) {
-	assertions := assert.New(t)
+	})
 
-	campaign, _ := campaign2.NewCampaign(name, content, contacts)
+	t.Run("should create and id can not be null", func(t *testing.T) {
+		assertions := assert.New(t)
 
-	assertions.NotNil(campaign.ID)
-}
-func TestNonParameterizableValues(t *testing.T) {
-	assertions := assert.New(t)
+		data, _ := campaign.NewCampaign(name, content, contacts)
 
-	campaign, _ := campaign2.NewCampaign(name, content, contacts)
+		assertions.NotNil(data.ID)
 
-	assertions.NotNil(campaign.ID)
-	assertions.GreaterOrEqual(campaign.CreatedOn, time.Now().Add(-time.Minute))
-}
+	})
+	t.Run("should add the correct value to CreatedOn field", func(t *testing.T) {
+		assertions := assert.New(t)
+		now := time.Now().Add(-time.Minute)
 
-func TestMustValidateName(t *testing.T) {
-	assertions := assert.New(t)
+		data, _ := campaign.NewCampaign(name, content, contacts)
 
-	_, exception := campaign2.NewCampaign("", content, contacts)
+		assertions.Greater(data.CreatedOn, now)
 
-	assertions.Equal("name can not be empty", exception.Error())
-}
-func TestMustValidateContent(t *testing.T) {
-	assertions := assert.New(t)
+	})
+	t.Run("should validate the min length of name", func(t *testing.T) {
+		assertions := assert.New(t)
 
-	_, exception := campaign2.NewCampaign(name, "", contacts)
+		_, err := campaign.NewCampaign("", content, contacts)
 
-	assertions.Equal("content is required", exception.Error())
-}
+		assertions.Equal("Name is required with min 5", err.Error())
 
-func TestMustValidateEmails(t *testing.T) {
-	assertions := assert.New(t)
+	})
+	t.Run("should validate the max length of name", func(t *testing.T) {
+		assertions := assert.New(t)
 
-	_, exception := campaign2.NewCampaign(name, content, []string{})
+		_, err := campaign.NewCampaign(fake.Lorem().Text(30), content, contacts)
 
-	assertions.Equal("emails are required", exception.Error())
+		assertions.Equal("Name is required with max 24", err.Error())
+
+	})
+	t.Run("should validate the min length of contacts array", func(t *testing.T) {
+		assertions := assert.New(t)
+
+		_, err := campaign.NewCampaign(name, content, nil)
+
+		assertions.Equal("Contacts is required with min 1", err.Error())
+
+	})
+	t.Run("should validate if the passed emails are valid", func(t *testing.T) {
+		assertions := assert.New(t)
+
+		_, err := campaign.NewCampaign(name, content, []string{"email_invalid"})
+
+		assertions.Equal("Email is not valid", err.Error())
+
+	})
 }
