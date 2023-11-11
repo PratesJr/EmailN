@@ -23,3 +23,13 @@ func (s *Service) Create(payload contract.NewCampaign) (string, error) {
 
 	return campaign.ID, err
 }
+func (s *Service) Find() ([]Campaign, error) {
+
+	result, err := s.Repository.Find()
+
+	if err != nil {
+		return nil, exceptions.UnkownErrror
+	}
+	return result, nil
+
+}
