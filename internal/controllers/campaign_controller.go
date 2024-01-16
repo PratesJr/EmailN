@@ -5,6 +5,7 @@ import (
 	"emailn/internal/domain/campaign"
 	"emailn/internal/domain/exceptions"
 	"errors"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"net/http"
 )
@@ -34,7 +35,8 @@ func (h CampaignHandler) PostCampaign(w http.ResponseWriter, r *http.Request) (i
 	return map[string]string{"id": id}, 201, nil
 }
 
-func (h CampaignHandler) GetCampaign(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
-	result, err := h.CampaignService.Repository.Find()
+func (h CampaignHandler) GetCampaignById(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
+	id := chi.URLParam(r, "id")
+	result, err := h.CampaignService.FindById(id)
 	return result, 200, err
 }

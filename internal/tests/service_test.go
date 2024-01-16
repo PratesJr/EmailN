@@ -20,7 +20,7 @@ func TestService(t *testing.T) {
 			Content: "content",
 			Email:   []string{"teste@mail.com", "testeee@mail.com"},
 		}
-		service = campaign.Service{}
+		service = campaign.ServiceImpl{}
 	)
 	t.Run("should create a campaign with no errors", func(t *testing.T) {
 		assertions := assert.New(t)
@@ -107,15 +107,22 @@ func TestService(t *testing.T) {
 		assertions.NotNil(err)
 		assertions.Equal("Contacts is required with min 1", err.Error())
 	})
-	t.Run("should validate contacts format", func(t *testing.T) {
+	t.Run("should return the find by id result", func(t *testing.T) {
 		assertions := assert.New(t)
-
-		_, err := campaign.NewCampaign(
+		repoMock := new(mocks.RepositoryMock)
+		service.Repository = repoMock
+		nCampaign, _ := campaign.NewCampaign(
 			fake.Lorem().Text(13),
-			fake.Lorem().Text(100),
-			[]string{"email"})
+			"content",
+			[]string{"teste@mail.com", "testeee@mail.com"},
+		)
+		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
 
-		assertions.NotNil(err)
-		assertions.Equal("Email is not valid", err.Error())
+		campaignReturned, _ := service.FindById(nCampaign.ID)
+		assertions.Equal(
+			nCampaign.ID,
+			campaignReturned.ID,
+		)
 	})
+
 }

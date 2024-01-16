@@ -17,12 +17,12 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	campaignHandler := controllers.CampaignHandler{
-		CampaignService: campaign.Service{
+		CampaignService: &campaign.ServiceImpl{
 			Repository: &database.CampaignRepository{},
 		},
 	}
 	r.Post("/campaign", controllers.HandlerError(campaignHandler.PostCampaign))
-	r.Get("/campaign", controllers.HandlerError(campaignHandler.GetCampaign))
+	r.Get("/campaign/{id}", controllers.HandlerError(campaignHandler.GetCampaignById))
 
 	err := http.ListenAndServe(":3000", r)
 

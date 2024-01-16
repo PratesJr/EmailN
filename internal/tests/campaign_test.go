@@ -2,6 +2,7 @@ package tests
 
 import (
 	"emailn/internal/domain/campaign"
+	"emailn/internal/enums"
 	"github.com/jaswdr/faker"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -75,4 +76,13 @@ func TestCampaign(t *testing.T) {
 		assertions.Equal("Email is not valid", err.Error())
 
 	})
+	t.Run("should create a campaign with status PENDING", func(t *testing.T) {
+		assertions := assert.New(t)
+
+		data, _ := campaign.NewCampaign(name, content, []string{"mail@mail.com"})
+
+		assertions.Equal(enums.Pending, data.Status)
+
+	})
+
 }

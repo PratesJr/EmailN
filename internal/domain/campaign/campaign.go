@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"emailn/internal/enums"
 	"emailn/internal/validators"
 	"github.com/rs/xid"
 	"time"
@@ -15,6 +16,7 @@ type Campaign struct {
 	CreatedOn time.Time `validate:"required"`
 	Content   string    `validate:"min=5,max=255"`
 	Contacts  []Contact `validate:"min=1,dive"`
+	Status    string
 }
 
 func NewCampaign(name string, content string, email []string) (*Campaign, error) {
@@ -30,6 +32,7 @@ func NewCampaign(name string, content string, email []string) (*Campaign, error)
 		CreatedOn: time.Now(),
 		Content:   content,
 		Contacts:  contacts,
+		Status:    enums.Pending,
 	}
 
 	err := validators.Validate(campaign)
