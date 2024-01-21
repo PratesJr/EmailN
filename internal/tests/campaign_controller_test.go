@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"emailn/internal/contract"
 	"emailn/internal/controllers"
+	"emailn/internal/domain/campaign"
 	"emailn/internal/tests/mocks"
 	"encoding/json"
 	"fmt"
@@ -68,5 +69,26 @@ func TestController(t *testing.T) {
 		_, _, err := handler.PostCampaign(rr, req)
 
 		assertions.NotNil(err)
+	})
+	t.Run("should get a campaign by id", func(t *testing.T) {
+		nCampaign, _ := campaign.NewCampaign(
+			fake.Lorem().Text(13),
+			"content",
+			[]string{"teste@mail.com", "testeee@mail.com"},
+		)
+		assertions := assert.New(t)
+		service := new(mocks.ServiceMock)
+		service.On("FindById", mock.Anything).Return(nCampaign, nil)
+
+		handler := controllers.CampaignHandler{
+			CampaignService: service,
+		}
+
+		req, _ := http.NewRequest("GET", "/", nil)
+		rr := httptest.NewRecorder()
+
+		_, status, err := handler.GetCampaignById(rr, req)
+		assertions.Equal(200, status)
+		assertions.Nil(err)
 	})
 }

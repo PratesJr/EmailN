@@ -1,0 +1,17 @@
+version: '3'
+services:
+  mailN_database:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgrespostgres
+      - POSTGRES_DATABASE=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - mailN_database:/var/lib/postgresql/projGo/data
+
+volumes:
+  mailN_database:
+    driver: local
