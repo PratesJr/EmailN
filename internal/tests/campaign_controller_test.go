@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"emailn/internal/contract"
 	"emailn/internal/controllers"
-	"emailn/internal/mocks"
+	"emailn/internal/tests/mocks"
 	"encoding/json"
 	"fmt"
 	"github.com/jaswdr/faker"

@@ -4,7 +4,7 @@ import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
 	"emailn/internal/domain/exceptions"
-	"emailn/internal/mocks"
+	"emailn/internal/tests/mocks"
 	"github.com/jaswdr/faker"
 	"testing"
 
