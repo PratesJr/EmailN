@@ -3,7 +3,7 @@ package main
 import (
 	"emailn/internal/controllers"
 	"emailn/internal/domain/campaign"
-	"emailn/internal/infra/database"
+	"emailn/internal/infra/database/repositories"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
@@ -18,7 +18,7 @@ func main() {
 
 	campaignHandler := controllers.CampaignHandler{
 		CampaignService: &campaign.ServiceImpl{
-			Repository: &database.CampaignRepository{},
+			Repository: &repositories.CampaignRepository{},
 		},
 	}
 	r.Post("/campaign", controllers.HandlerError(campaignHandler.PostCampaign))
