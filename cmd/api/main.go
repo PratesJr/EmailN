@@ -3,6 +3,7 @@ package main
 import (
 	"emailn/internal/controllers"
 	"emailn/internal/domain/campaign"
+	"emailn/internal/infra/database"
 	"emailn/internal/infra/database/repositories"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -16,9 +17,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	db := database.DbConnection()
 	campaignHandler := controllers.CampaignHandler{
 		CampaignService: &campaign.ServiceImpl{
-			Repository: &repositories.CampaignRepository{},
+			Repository: &repositories.CampaignRepository{
+				Db: db,
+			},
 		},
 	}
 	r.Post("/campaign", controllers.HandlerError(campaignHandler.PostCampaign))
