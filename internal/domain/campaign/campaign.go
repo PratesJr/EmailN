@@ -8,15 +8,17 @@ import (
 )
 
 type Contact struct {
-	Email string `validate:"email"`
+	ID         string `gorm:"size=50"`
+	Email      string `validate:"email" gorm:"size=100"`
+	CampaignId string `gorm:"size=50"`
 }
 type Campaign struct {
-	ID        string    `validate:"required"`
-	Name      string    `validate:"min=5,max=24"`
-	CreatedOn time.Time `validate:"required"`
-	Content   string    `validate:"min=5,max=255"`
+	ID        string    `validate:"required"  gorm:"size=50"`
+	Name      string    `validate:"min=5,max=24" gorm:"size=24"`
+	CreatedOn time.Time `validate:"required" `
+	Content   string    `validate:"min=5,max=255"  gorm:"size=1024"`
 	Contacts  []Contact `validate:"min=1,dive"`
-	Status    string
+	Status    string    `gorm:"size=20"`
 }
 
 func NewCampaign(name string, content string, email []string) (*Campaign, error) {
@@ -24,6 +26,7 @@ func NewCampaign(name string, content string, email []string) (*Campaign, error)
 	contacts := make([]Contact, len(email))
 
 	for index, value := range email {
+		contacts[index].ID = xid.New().String()
 		contacts[index].Email = value
 	}
 	campaign := &Campaign{
