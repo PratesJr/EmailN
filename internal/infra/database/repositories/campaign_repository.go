@@ -22,6 +22,6 @@ func (c *CampaignRepository) Find() ([]campaign.Campaign, error) {
 }
 func (c *CampaignRepository) FindById(id string) (*campaign.Campaign, error) {
 	var result campaign.Campaign
-	tx := c.Db.First(&result, id)
+	tx := c.Db.First(&result, "id=?", id)
 	return &result, tx.Error
 }
