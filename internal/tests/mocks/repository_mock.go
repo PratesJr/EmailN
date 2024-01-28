@@ -23,3 +23,8 @@ func (r *RepositoryMock) FindById(id string) (*campaign.Campaign, error) {
 	args := r.Called(id)
 	return args.Get(0).(*campaign.Campaign), args.Error(1)
 }
+
+func (r *RepositoryMock) Delete(campaign *campaign.Campaign) error {
+	//args := r.Called(campaign)
+	return nil
+}

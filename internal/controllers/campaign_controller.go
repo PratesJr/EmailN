@@ -40,3 +40,14 @@ func (h CampaignHandler) GetCampaignById(w http.ResponseWriter, r *http.Request)
 	result, err := h.CampaignService.FindById(id)
 	return result, 200, err
 }
+func (h CampaignHandler) CancelCampaign(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
+	id := chi.URLParam(r, "id")
+	result, err := h.CampaignService.Cancel(id)
+	return result, 200, err
+}
+
+func (h CampaignHandler) Delete(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
+	id := chi.URLParam(r, "id")
+	err := h.CampaignService.Delete(id)
+	return nil, 200, err
+}

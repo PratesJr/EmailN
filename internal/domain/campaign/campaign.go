@@ -3,6 +3,7 @@ package campaign
 import (
 	"emailn/internal/enums"
 	"emailn/internal/validators"
+	"errors"
 	"github.com/rs/xid"
 	"time"
 )
@@ -44,4 +45,15 @@ func NewCampaign(name string, content string, email []string) (*Campaign, error)
 		return nil, err
 	}
 	return campaign, nil
+}
+
+func (c *Campaign) Cancel() error {
+
+	if c.Status != enums.Pending {
+		return errors.New("Unable to Update campaign in status:" + c.Status)
+	}
+
+	c.Status = enums.Canceled
+
+	return nil
 }

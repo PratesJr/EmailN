@@ -1,7 +1,8 @@
 package enums
 
 const (
-	Pending string = "PENDING"
-	Started string = "STARTED"
-	Done    string = "DONE"
+	Pending  string = "PENDING"
+	Started  string = "STARTED"
+	Done     string = "DONE"
+	Canceled string = "CANCELED"
 )

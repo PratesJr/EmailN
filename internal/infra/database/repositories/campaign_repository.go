@@ -10,7 +10,7 @@ type CampaignRepository struct {
 }
 
 func (c *CampaignRepository) Save(campaign *campaign.Campaign) error {
-	tx := c.Db.Create(campaign)
+	tx := c.Db.Save(campaign)
 
 	return tx.Error
 }
@@ -24,4 +24,8 @@ func (c *CampaignRepository) FindById(id string) (*campaign.Campaign, error) {
 	var result campaign.Campaign
 	tx := c.Db.First(&result, "id=?", id)
 	return &result, tx.Error
+}
+func (c *CampaignRepository) Delete(campaign *campaign.Campaign) error {
+	tx := c.Db.Delete(&campaign)
+	return tx.Error
 }
