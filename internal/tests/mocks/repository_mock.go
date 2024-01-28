@@ -9,11 +9,15 @@ type RepositoryMock struct {
 	mock.Mock
 }
 
-func (r *RepositoryMock) Save(campaign *campaign.Campaign) error {
+func (r *RepositoryMock) Update(campaign *campaign.Campaign) error {
 	args := r.Called(campaign)
 	return args.Error(0)
 }
 
+func (r *RepositoryMock) Create(campaign *campaign.Campaign) error {
+	args := r.Called(campaign)
+	return args.Error(0)
+}
 func (r *RepositoryMock) Find() ([]campaign.Campaign, error) {
 	//args := r.Called(campaign)
 	return nil, nil

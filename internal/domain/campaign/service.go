@@ -23,7 +23,7 @@ func (s *ServiceImpl) Create(payload contract.NewCampaign) (string, error) {
 		return "", err
 
 	}
-	err = s.Repository.Save(campaign)
+	err = s.Repository.Create(campaign)
 	if err != nil {
 		return "", exceptions.DbError
 	}
@@ -65,7 +65,7 @@ func (s *ServiceImpl) Cancel(id string) (*Campaign, error) {
 		return nil, ex
 	}
 
-	e := s.Repository.Save(result)
+	e := s.Repository.Update(result)
 
 	if e != nil {
 		return nil, e
