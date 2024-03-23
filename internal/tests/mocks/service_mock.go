@@ -30,6 +30,6 @@ func (r *ServiceMock) Cancel(id string) (*campaign.Campaign, error) {
 }
 
 func (r *ServiceMock) Delete(id string) error {
-	//args := r.Called(id)
 	return nil
+
 }

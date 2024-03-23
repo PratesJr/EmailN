@@ -25,7 +25,10 @@ func (r *RepositoryMock) Find() ([]campaign.Campaign, error) {
 
 func (r *RepositoryMock) FindById(id string) (*campaign.Campaign, error) {
 	args := r.Called(id)
-	return args.Get(0).(*campaign.Campaign), args.Error(1)
+	if args.Error(1) != nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*campaign.Campaign), nil
 }
 
 func (r *RepositoryMock) Delete(campaign *campaign.Campaign) error {
