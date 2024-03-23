@@ -26,7 +26,7 @@ func TestService(t *testing.T) {
 		assertions := assert.New(t)
 		repoMock := new(mocks.RepositoryMock)
 
-		repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
+		repoMock.On("Create", mock.MatchedBy(func(c *campaign.Campaign) bool {
 			return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
 		})).Return(nil)
 
@@ -40,7 +40,7 @@ func TestService(t *testing.T) {
 	t.Run("should save campaign", func(t *testing.T) {
 		repoMock := new(mocks.RepositoryMock)
 
-		repoMock.On("Save", mock.MatchedBy(func(c *campaign.Campaign) bool {
+		repoMock.On("Create", mock.MatchedBy(func(c *campaign.Campaign) bool {
 			return c.Name == newCampaign.Name && c.Content == newCampaign.Content && len(c.Contacts) == len(newCampaign.Email)
 		})).Return(nil)
 

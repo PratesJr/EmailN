@@ -23,15 +23,15 @@ func (c *CampaignRepository) Create(campaign *campaign.Campaign) error {
 
 func (c *CampaignRepository) Find() ([]campaign.Campaign, error) {
 	var result []campaign.Campaign
-	tx := c.Db.Find(&result)
+	tx := c.Db.Preload("Contacts").Find(&result)
 	return result, tx.Error
 }
 func (c *CampaignRepository) FindById(id string) (*campaign.Campaign, error) {
 	var result campaign.Campaign
-	tx := c.Db.First(&result, "id=?", id)
+	tx := c.Db.Preload("Contacts").First(&result, "id=?", id)
 	return &result, tx.Error
 }
 func (c *CampaignRepository) Delete(campaign *campaign.Campaign) error {
-	tx := c.Db.Delete(&campaign)
+	tx := c.Db.Select("Contacts").Delete(&campaign)
 	return tx.Error
 }

@@ -3,6 +3,8 @@ package campaign
 import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/exceptions"
+	"errors"
+	"gorm.io/gorm"
 )
 
 type Service interface {
@@ -45,7 +47,10 @@ func (s *ServiceImpl) FindById(id string) (*Campaign, error) {
 	result, err := s.Repository.FindById(id)
 
 	if err != nil {
-		return nil, exceptions.UnkownErrror
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, exceptions.UnkownErrror
+		}
+		return nil, err
 	}
 	return result, nil
 
@@ -56,7 +61,10 @@ func (s *ServiceImpl) Cancel(id string) (*Campaign, error) {
 	result, err := s.Repository.FindById(id)
 
 	if err != nil {
-		return nil, exceptions.UnkownErrror
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, exceptions.UnkownErrror
+		}
+		return nil, err
 	}
 
 	ex := result.Cancel()
@@ -78,6 +86,9 @@ func (s *ServiceImpl) Delete(id string) error {
 	result, errFind := s.Repository.FindById(id)
 
 	if errFind != nil {
+		if !errors.Is(errFind, gorm.ErrRecordNotFound) {
+			return exceptions.UnkownErrror
+		}
 		return errFind
 	}
 
