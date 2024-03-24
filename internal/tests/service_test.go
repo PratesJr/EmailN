@@ -4,8 +4,10 @@ import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
 	"emailn/internal/domain/exceptions"
+	"emailn/internal/enums"
 	"emailn/internal/tests/mocks"
 	"github.com/jaswdr/faker"
+	"gorm.io/gorm"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -125,4 +127,70 @@ func TestService(t *testing.T) {
 		)
 	})
 
+	t.Run("should delete with no error", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
+		service.Repository = repoMock
+		nCampaign, _ := campaign.NewCampaign(
+			fake.Lorem().Text(13),
+			"content",
+			[]string{"teste@mail.com", "testeee@mail.com"},
+		)
+		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
+
+		err := service.Delete(nCampaign.ID)
+		assertions.Nil(err)
+
+	})
+
+	t.Run("should throw error before delete if record not found", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
+		service.Repository = repoMock
+
+		repoMock.On("FindById", mock.Anything).Return(nil, gorm.ErrRecordNotFound)
+
+		err := service.Delete("34234345asr234")
+		assertions.Equal(err.Error(), gorm.ErrRecordNotFound.Error())
+
+	})
+
+	t.Run("should cancel campaign with no errors", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
+		service.Repository = repoMock
+		nCampaign, _ := campaign.NewCampaign(
+			fake.Lorem().Text(13),
+			"content",
+			[]string{"teste@mail.com", "testeee@mail.com"},
+		)
+
+		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
+		repoMock.On("Update", mock.Anything).Return(nil)
+
+		canceled, err := service.Cancel("34234345asr234")
+
+		assertions.Nil(err)
+		assertions.Equal(canceled.Status, enums.Canceled)
+
+	})
+
+	t.Run("should cancel campaign with no errors", func(t *testing.T) {
+		assertions := assert.New(t)
+		repoMock := new(mocks.RepositoryMock)
+		service.Repository = repoMock
+		nCampaign, _ := campaign.NewCampaign(
+			fake.Lorem().Text(13),
+			"content",
+			[]string{"teste@mail.com", "testeee@mail.com"},
+		)
+
+		nCampaign.Status = enums.Started
+		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
+
+		_, err := service.Cancel("34234345asr234")
+
+		assertions.Equal("Unable to Update campaign in status:"+enums.Started, err.Error())
+
+	})
 }
