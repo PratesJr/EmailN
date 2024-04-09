@@ -5,6 +5,7 @@ import (
 	"emailn/internal/domain/campaign"
 	"emailn/internal/infra/database"
 	"emailn/internal/infra/database/repositories"
+	"emailn/internal/middlewares"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
@@ -16,6 +17,7 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middlewares.Authentication)
 
 	db := database.DbConnection()
 	campaignHandler := controllers.CampaignHandler{

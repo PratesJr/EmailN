@@ -11,11 +11,13 @@ func LoadEnv() *EnvProperties {
 		return nil
 	}
 	return &EnvProperties{
-		DatabaseHost:   os.Getenv("DATABASE_HOST"),
-		DatabaseName:   os.Getenv("DATABASE_NAME"),
-		DatabasePasswd: os.Getenv("DATABASE_PASSWD"),
-		DatabaseUser:   os.Getenv("DATABASE_USER"),
-		DatabasePort:   os.Getenv("DATABASE_PORT"),
+		DatabaseHost:      os.Getenv("DATABASE_HOST"),
+		DatabaseName:      os.Getenv("DATABASE_NAME"),
+		DatabasePasswd:    os.Getenv("DATABASE_PASSWD"),
+		DatabaseUser:      os.Getenv("DATABASE_USER"),
+		DatabasePort:      os.Getenv("DATABASE_PORT"),
+		AuthenticationURL: os.Getenv("AUTHENTICATION_URL"),
+		AuthClientId:      os.Getenv("AUTHENTICATION_CLIENT_ID"),
 	}
 
 }
