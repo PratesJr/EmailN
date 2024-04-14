@@ -26,7 +26,7 @@ func Authentication(next http.Handler) http.Handler {
 			render.JSON(w, r, map[string]string{"error": "error to connect to provider"})
 			return
 		}
-		_, err = provider.Verifier(&oidc.Config{ClientID: config.LoadEnv().AuthClientId}).Verify(r.Context(), token)
+		_, err = provider.Verifier(&oidc.Config{SkipClientIDCheck: true}).Verify(r.Context(), token)
 		if err != nil {
 			render.Status(r, 401)
 			render.JSON(w, r, map[string]string{"error": "Invalid auth token"})
