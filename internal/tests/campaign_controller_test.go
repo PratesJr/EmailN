@@ -75,6 +75,7 @@ func TestController(t *testing.T) {
 			fake.Lorem().Text(13),
 			"content",
 			[]string{"teste@mail.com", "testeee@mail.com"},
+			"",
 		)
 		assertions := assert.New(t)
 		service := new(mocks.ServiceMock)

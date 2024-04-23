@@ -20,7 +20,7 @@ type ServiceImpl struct {
 
 func (s *ServiceImpl) Create(payload contract.NewCampaign) (string, error) {
 
-	campaign, err := NewCampaign(payload.Name, payload.Content, payload.Email)
+	campaign, err := NewCampaign(payload.Name, payload.Content, payload.Email, payload.CreatedBy)
 	if err != nil {
 		return "", err
 

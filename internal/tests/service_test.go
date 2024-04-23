@@ -18,9 +18,10 @@ func TestService(t *testing.T) {
 	var (
 		fake        = faker.New()
 		newCampaign = contract.NewCampaign{
-			Name:    fake.Lorem().Text(13),
-			Content: "content",
-			Email:   []string{"teste@mail.com", "testeee@mail.com"},
+			Name:      fake.Lorem().Text(13),
+			Content:   "content",
+			Email:     []string{"teste@mail.com", "testeee@mail.com"},
+			CreatedBy: "mail@email.com.br",
 		}
 		service = campaign.ServiceImpl{}
 	)
@@ -71,11 +72,12 @@ func TestService(t *testing.T) {
 		assertions := assert.New(t)
 		repoMock := new(mocks.RepositoryMock)
 		nCampaign := contract.NewCampaign{
-			Name:    fake.Lorem().Text(13),
-			Content: "content",
-			Email:   []string{"teste@mail.com", "testeee@mail.com"},
+			Name:      fake.Lorem().Text(13),
+			Content:   "content",
+			Email:     []string{"teste@mail.com", "testeee@mail.com"},
+			CreatedBy: "mail@email.com",
 		}
-		repoMock.On("Save", mock.Anything).Return(exceptions.DbError)
+		repoMock.On("Create", mock.Anything).Return(exceptions.DbError)
 
 		service.Repository = repoMock
 		_, err := service.Create(nCampaign)
@@ -104,7 +106,7 @@ func TestService(t *testing.T) {
 		_, err := campaign.NewCampaign(
 			fake.Lorem().Text(13),
 			fake.Lorem().Text(100),
-			[]string{})
+			[]string{}, "")
 
 		assertions.NotNil(err)
 		assertions.Equal("Contacts is required with min 1", err.Error())
@@ -117,6 +119,7 @@ func TestService(t *testing.T) {
 			fake.Lorem().Text(13),
 			"content",
 			[]string{"teste@mail.com", "testeee@mail.com"},
+			"meail@gmail.com",
 		)
 		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
 
@@ -135,6 +138,7 @@ func TestService(t *testing.T) {
 			fake.Lorem().Text(13),
 			"content",
 			[]string{"teste@mail.com", "testeee@mail.com"},
+			"mail@bol.com",
 		)
 		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
 
@@ -163,6 +167,7 @@ func TestService(t *testing.T) {
 			fake.Lorem().Text(13),
 			"content",
 			[]string{"teste@mail.com", "testeee@mail.com"},
+			"mail@yahoo.com",
 		)
 
 		repoMock.On("FindById", mock.Anything).Return(nCampaign, nil)
@@ -183,6 +188,7 @@ func TestService(t *testing.T) {
 			fake.Lorem().Text(13),
 			"content",
 			[]string{"teste@mail.com", "testeee@mail.com"},
+			"mail@dock.com",
 		)
 
 		nCampaign.Status = enums.Started

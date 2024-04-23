@@ -20,9 +20,10 @@ type Campaign struct {
 	Content   string    `validate:"min=5,max=255"  gorm:"size=1024"`
 	Contacts  []Contact `validate:"min=1,dive"`
 	Status    string    `gorm:"size=20"`
+	CreatedBy string    `validate:"email" gorm:"size=100"`
 }
 
-func NewCampaign(name string, content string, email []string) (*Campaign, error) {
+func NewCampaign(name string, content string, email []string, createdBy string) (*Campaign, error) {
 
 	contacts := make([]Contact, len(email))
 
@@ -37,6 +38,7 @@ func NewCampaign(name string, content string, email []string) (*Campaign, error)
 		Content:   content,
 		Contacts:  contacts,
 		Status:    enums.Pending,
+		CreatedBy: createdBy,
 	}
 
 	err := validators.Validate(campaign)
