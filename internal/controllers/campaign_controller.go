@@ -22,6 +22,7 @@ func (h CampaignHandler) PostCampaign(w http.ResponseWriter, r *http.Request) (i
 		return nil, 500, errDecode
 	}
 	id, err := h.CampaignService.Create(_contract)
+	_contract.CreatedBy = r.Context().Value("email").(string)
 
 	if err != nil {
 		if errors.Is(err, exceptions.DbError) {

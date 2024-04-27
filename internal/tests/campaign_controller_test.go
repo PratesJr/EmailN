@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"context"
 	"emailn/internal/contract"
 	"emailn/internal/controllers"
 	"emailn/internal/domain/campaign"
@@ -30,7 +31,7 @@ func TestController(t *testing.T) {
 		assertions := assert.New(t)
 		service := new(mocks.ServiceMock)
 		service.On("Create", mock.MatchedBy(func(request contract.NewCampaign) bool {
-			if request.Name == body.Name && request.Content == body.Content {
+			if request.Name == body.Name && request.Content == body.Content && request.CreatedBy == body.CreatedBy {
 				return true
 			} else {
 				return false
@@ -45,6 +46,7 @@ func TestController(t *testing.T) {
 		json.NewEncoder(&buffer).Encode(body)
 
 		req, _ := http.NewRequest("POST", "/", &buffer)
+		req = req.WithContext(context.WithValue(req.Context(), "email", "mail@email.com"))
 		rr := httptest.NewRecorder()
 
 		_, status, err := handler.PostCampaign(rr, req)
@@ -64,6 +66,7 @@ func TestController(t *testing.T) {
 		json.NewEncoder(&buffer).Encode(body)
 
 		req, _ := http.NewRequest("POST", "/", &buffer)
+		req = req.WithContext(context.WithValue(req.Context(), "email", "mail@email.com"))
 		rr := httptest.NewRecorder()
 
 		_, _, err := handler.PostCampaign(rr, req)

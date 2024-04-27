@@ -1,8 +1,10 @@
 package middlewares
 
 import (
+	"context"
 	"emailn/internal/config"
 	"github.com/coreos/go-oidc/v3/oidc"
+	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/render"
 	"net/http"
 	"strings"
@@ -32,6 +34,12 @@ func Authentication(next http.Handler) http.Handler {
 			render.JSON(w, r, map[string]string{"error": "Invalid auth token"})
 			return
 		}
-		next.ServeHTTP(w, r)
+
+		decoded, _ := jwtGo.Parse(token, nil)
+
+		email := decoded.Claims.(jwtGo.MapClaims)["email"]
+
+		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), "email", email)))
+
 	})
 }
