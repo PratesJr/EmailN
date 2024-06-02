@@ -18,6 +18,9 @@ func LoadEnv() *EnvProperties {
 		DatabasePort:      os.Getenv("DATABASE_PORT"),
 		AuthenticationURL: os.Getenv("AUTHENTICATION_URL"),
 		AuthClientId:      os.Getenv("AUTHENTICATION_CLIENT_ID"),
+		MailPassword:      os.Getenv("MAIL_PASS"),
+		MailUser:          os.Getenv("MAIL_USER"),
+		SMTPHost:          os.Getenv("SMTP_HOST"),
 	}
 
 }

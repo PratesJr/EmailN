@@ -8,4 +8,7 @@ type EnvProperties struct {
 	DatabasePort      string
 	AuthenticationURL string
 	AuthClientId      string
+	MailPassword      string
+	MailUser          string
+	SMTPHost          string
 }
