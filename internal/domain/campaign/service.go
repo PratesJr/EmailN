@@ -3,6 +3,7 @@ package campaign
 import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/exceptions"
+	"emailn/internal/infra/mail"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -95,4 +96,17 @@ func (s *ServiceImpl) Delete(id string) error {
 	err := s.Repository.Delete(result)
 
 	return err
+}
+
+func (s *ServiceImpl) Start(id string) error {
+	result, errFind := s.Repository.FindById(id)
+
+	if errFind != nil {
+		if !errors.Is(errFind, gorm.ErrRecordNotFound) {
+			return exceptions.UnkownErrror
+		}
+		return errFind
+	}
+
+	return mail.SendMail(*result)
 }
